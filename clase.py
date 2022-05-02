@@ -5,7 +5,7 @@ from pydantic import BaseModel
 # FastAPI
 from fastapi import FastAPI
 # Body permite aclarar que un parametro de entrada es de tipo Body 
-from fastapi import Body 
+from fastapi import Body, Query
 
 app = FastAPI()
 
@@ -29,3 +29,11 @@ def create_person(person: Person = Body(...)):
     # (...) Parametro o atributo obligatorio 
     return Person 
 
+
+# Validaciones: Query Parameters 
+@app.get("/person/detail")
+def show_person(
+    name: Optional[str] = Query(None, min_length=1, max_length=50),
+    age: int = Query(...)
+):
+    return {f'hello, {name}': age}
