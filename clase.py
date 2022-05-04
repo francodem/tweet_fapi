@@ -24,47 +24,74 @@ class Person(BaseModel):
     first_name: str = Field(
         ..., 
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Franco"
     )
     last_name: str = Field(
         ..., 
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="Moreno"
     )
     age: int = Field(
         ...,
         gt=0,
-        le=115
+        le=115,
+        example=26
     )
     hair_color: Optional[HairColor] = Field(
-        default=None
+        default=None,
+        example=HairColor.red
     )
-    is_married: Optional[bool] = None 
+    is_married: Optional[bool] = Field(default=None, example=True) 
     email: EmailStr = Field(
-        ...
+        ...,
+        example="francomorenoq@gmail.com"
     )
     credit_card_number: PaymentCardNumber = Field(
         ...,
         min_length=16,
-        max_length=16
+        max_length=16,
+        example="1234567891234567"
     )
+    
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "first_name": "Franco",
+    #             "last_name": "Moreno",
+    #             "age": 26,
+    #             "hair_color": "brown",
+    #             "is_married": True,
+    #             "email": "francomorenoq@gmail.com",
+    #             "credit_card_number": "1234567891234567"
+    #         }
+    #     }
 
+
+class LocationExample(Enum):
+    city = "Ensenada"
+    state = "Baja"
+    country = "Mexico"
 
 class Location(BaseModel):
     city: str = Field(
-        ..., 
+        ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example=LocationExample.city
     )
     state: str = Field(
-        ..., 
+        ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example=LocationExample.state
     )
     country: str = Field(
-        ..., 
+        ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example=LocationExample.country
     )
     
 
@@ -128,3 +155,4 @@ def update_person(
     response = person.dict()
     response.update(location.dict())
     return response 
+    return person 
