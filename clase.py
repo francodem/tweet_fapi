@@ -3,7 +3,7 @@ from typing import Optional
 from enum import Enum
 #Pydantic
 from pydantic import BaseModel
-from pydantic import Field
+from pydantic import Field, EmailStr, PaymentCardNumber
 # FastAPI
 from fastapi import FastAPI
 # Body permite aclarar que un parametro de entrada es de tipo Body 
@@ -25,12 +25,12 @@ class Person(BaseModel):
         ..., 
         min_length=1,
         max_length=50
-        )
+    )
     last_name: str = Field(
         ..., 
         min_length=1,
         max_length=50
-        )
+    )
     age: int = Field(
         ...,
         gt=0,
@@ -38,14 +38,34 @@ class Person(BaseModel):
     )
     hair_color: Optional[HairColor] = Field(
         default=None
-        ) 
+    )
     is_married: Optional[bool] = None 
+    email: EmailStr = Field(
+        ...
+    )
+    credit_card_number: PaymentCardNumber = Field(
+        ...,
+        min_length=16,
+        max_length=16
+    )
 
 
 class Location(BaseModel):
-    city: str
-    state: str
-    country: str
+    city: str = Field(
+        ..., 
+        min_length=1,
+        max_length=50
+    )
+    state: str = Field(
+        ..., 
+        min_length=1,
+        max_length=50
+    )
+    country: str = Field(
+        ..., 
+        min_length=1,
+        max_length=50
+    )
     
 
 @app.get("/")
