@@ -70,7 +70,7 @@ class Person(BaseModel):
 
 
 class LocationExample(Enum):
-    city = "Ensenada"
+    city = "Ensenada" 
     state = "Baja"
     country = "Mexico"
 
@@ -116,14 +116,16 @@ def show_person(
         max_length=50,
         title="Person Name",
         description="""This is the person name. 
-        It's between 1 and 50 characters"""
+        It's between 1 and 50 characters""",
+        example="Rocio"
         ),
     age: int = Query(
         ...,
         gt=0,
         title="Person age",
         description="""This is the person age. 
-        It's required"""
+        It's required""",
+        example=35
         )
 ):
     return {f'hello, {name}': age}
