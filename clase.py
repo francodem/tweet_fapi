@@ -20,7 +20,7 @@ class HairColor(Enum):
 
 
 # Models 
-class Person(BaseModel):
+class Person(BaseModel): 
     first_name: str = Field(
         ..., 
         min_length=1,
@@ -69,10 +69,23 @@ class Person(BaseModel):
     #     }
 
 
+class PassPerson(Person):
+    password: str = Field(
+        ...,
+        min_length=8,
+        example="12345678"
+    )
+    
+    
+class PersonOut(Person):
+    pass
+
+
 class LocationExample(Enum):
     city = "Ensenada" 
     state = "Baja"
     country = "Mexico"
+
 
 class Location(BaseModel):
     city: str = Field(
@@ -101,10 +114,10 @@ def home():
 
 
 # Request and Response Body 
-@app.post("/person/new")
-def create_person(person: Person = Body(...)):
+@app.post("/person/new", response_model=PersonOut)
+def create_person(person: PassPerson = Body(...)):
     # (...) Parametro o atributo obligatorio 
-    return Person 
+    return person 
 
 
 # Validaciones: Query Parameters 
