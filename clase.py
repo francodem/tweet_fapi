@@ -7,9 +7,21 @@ from pydantic import Field, EmailStr, PaymentCardNumber
 # FastAPI
 from fastapi import FastAPI
 # Body permite aclarar que un parametro de entrada es de tipo Body 
-from fastapi import Body, Query, Path, status
+from fastapi import Body, Query, Path, status, Form 
 
 app = FastAPI()
+
+class LoginOut(BaseModel):
+    username: str = Field(
+        ...,
+        max_length=20,
+        example="francodem"
+    )
+    message: str = Field(default="Login succesfully!")
+    
+
+class Error1(BaseModel):
+    message: str = Field(default="Error on message")
 
 class HairColor(Enum):
     white = "white"
@@ -178,3 +190,23 @@ def update_person(
     response.update(location.dict())
     return response 
     return person 
+
+
+@app.post(
+    path="/login",
+    status_code=status.HTTP_200_OK
+)
+def login(username: str = Form(...), password: str = Form(...)):
+    # Modelo de Pydantic es un objeto, se debe instanciar con los atributos 
+    # Se envia username unicamente, y se retorna los objetos del modelo 
+    response = LoginOut(
+        username=username
+        )
+    
+    if response.username == "franco":
+        return response
+    elif response.username == "laura":
+        response = Error1()
+        return response
+    else:
+        return {'response':'Error'}
