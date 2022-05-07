@@ -3,13 +3,17 @@ from typing import Optional
 from enum import Enum
 #Pydantic
 from pydantic import BaseModel
-from pydantic import Field, EmailStr, PaymentCardNumber
+from pydantic import Field
+from pydantic import EmailStr
+from pydantic import PaymentCardNumber
 # FastAPI
 from fastapi import FastAPI
 # Body permite aclarar que un parametro de entrada es de tipo Body 
-from fastapi import Body, Query, Path, status, Form 
+from fastapi import HTTPException
+from fastapi import Body, Query, Path, status, Form, Header, Cookie, UploadFile, File
 
 app = FastAPI()
+
 
 class LoginOut(BaseModel):
     username: str = Field(
@@ -22,6 +26,7 @@ class LoginOut(BaseModel):
 
 class Error1(BaseModel):
     message: str = Field(default="Error on message")
+
 
 class HairColor(Enum):
     white = "white"
@@ -163,6 +168,7 @@ def show_person(
     return {f'hello, {name}': age}
 
 
+persons = [1, 2, 3, 4, 5]
 # Validaciones: Path Paramaters
 @app.get("/person/detail/{person_id}", status_code=status.HTTP_200_OK)
 def show_person(
@@ -170,9 +176,17 @@ def show_person(
         ..., 
         gt=0,
         title="Person id",
-        description="This is the person id")
-):
+        description="This is the person id",
+        example=123)
+):  
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="This person doesn't exists!"
+        )
+    
     return {person_id: "It exists!"}
+
 
 
 @app.put("/person/{person_id}", status_code=status.HTTP_202_ACCEPTED)
@@ -210,3 +224,43 @@ def login(username: str = Form(...), password: str = Form(...)):
         return response
     else:
         return {'response':'Error'}
+
+
+@app.post(
+    path="/contact",
+    status_code=status.HTTP_200_OK
+)
+def contact(
+    first_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1
+    ),
+    last_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1
+    ),
+    email: str = EmailStr(...),
+    message: str = Form(
+        ...,
+        min_length=20,
+    ),
+    user_agent: Optional[str] = Header(default=None),
+    ads: Optional[str] = Cookie(default=None)
+):
+    return user_agent
+
+
+@app.post(
+    path="/post-image"
+)
+def post_image(
+    image: UploadFile = File(...)
+):
+    return {
+        "Filename": image.filename,
+        "Format": image.content_type,
+        "Size(MB)": round(len(image.file.read())/(1024**2), ndigits=2)
+    }
+    
