@@ -127,9 +127,11 @@ class Location(BaseModel):
 
 @app.get(
     "/",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Home"]
     )
 def home():
+    
     return {"Hello":"World"}
 
 
@@ -137,15 +139,34 @@ def home():
 @app.post(
     "/person/new",
     response_model=PersonOut,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    tags=["Person"],
+    summary="Create person in the app"
     )
 def create_person(person: PassPerson = Body(...)):
+    '''
+    Create Person
+    
+    This function creates a person in the app and save the information in the database 
+    
+    Parameters: 
+    - Request body parameters:
+        - **person: Person** -> A person model with first name, last name, age, hair color and marital status. 
+    
+    
+    Returns a person model with first name, last name, age, hair color and marital status. 
+    '''
     # (...) Parametro o atributo obligatorio 
     return person 
 
 
 # Validaciones: Query Parameters 
-@app.get("/person/detail", status_code=status.HTTP_200_OK)
+@app.get(
+    "/person/detail", 
+    status_code=status.HTTP_200_OK,
+    tags=["Person"],
+    deprecated=True
+    )
 def show_person(
     name: Optional[str] = Query(
         None, 
@@ -170,7 +191,11 @@ def show_person(
 
 persons = [1, 2, 3, 4, 5]
 # Validaciones: Path Paramaters
-@app.get("/person/detail/{person_id}", status_code=status.HTTP_200_OK)
+@app.get(
+    "/person/detail/{person_id}", 
+    status_code=status.HTTP_200_OK,
+    tags=["Person"]
+    )
 def show_person(
     person_id: int = Path(
         ..., 
@@ -189,7 +214,11 @@ def show_person(
 
 
 
-@app.put("/person/{person_id}", status_code=status.HTTP_202_ACCEPTED)
+@app.put(
+    "/person/{person_id}", 
+    status_code=status.HTTP_202_ACCEPTED,
+    tags=["Person"]
+    )
 def update_person(
     person_id: int = Path(
         ...,
@@ -208,7 +237,8 @@ def update_person(
 
 @app.post(
     path="/login",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Login"]
 )
 def login(username: str = Form(...), password: str = Form(...)):
     # Modelo de Pydantic es un objeto, se debe instanciar con los atributos 
@@ -228,7 +258,8 @@ def login(username: str = Form(...), password: str = Form(...)):
 
 @app.post(
     path="/contact",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Contact"]
 )
 def contact(
     first_name: str = Form(
@@ -253,7 +284,8 @@ def contact(
 
 
 @app.post(
-    path="/post-image"
+    path="/post-image",
+    tags=["Upload Files"]
 )
 def post_image(
     image: UploadFile = File(...)
