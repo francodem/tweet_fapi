@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "FastAPI:main.signup (python3.6)",
+            "invokeTarget": {
+                "target": "code",
+                "projectRoot": "${workspaceFolder}/",
+                "lambdaHandler": "main.signup"
+            },
+            "lambda": {
+                "runtime": "python3.6",
+                "payload": {},
+                "environmentVariables": {}
+            }
+        }
+    ]
+}
