@@ -295,4 +295,3 @@ def post_image(
         "Format": image.content_type,
         "Size(MB)": round(len(image.file.read())/(1024**2), ndigits=2)
     }
-    
