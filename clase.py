@@ -232,7 +232,6 @@ def update_person(
     response = person.dict()
     response.update(location.dict())
     return response 
-    return person 
 
 
 @app.post(
